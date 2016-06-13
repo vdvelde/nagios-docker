@@ -1,16 +1,10 @@
 FROM ubuntu:14.04
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV NAGIOS_HOME /usr/local/nagios
-ENV NAGIOSGRAPH_HOME /usr/local/nagiosgraph
-ENV NAGIOS_USER nagios
-ENV NAGIOS_GROUP nagios
-ENV NAGIOS_CMDUSER nagios
-ENV NAGIOS_CMDGROUP nagios
-ENV NAGIOSADMIN_USER nagiosadmin
-ENV NAGIOSADMIN_PASS nagios
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
+ENV NAGIOS_HOME=/usr/local/nagios NAGIOS_USER=nagios NAGIOS_GROUP=nagios NAGIOS_CMDUSER=nagios NAGIOS_CMDGROUP=nagios
+ENV NAGIOSGRAPH_HOME=/usr/local/nagiosgraph NAGIOSADMIN_USER=nagiosadmin NAGIOSADMIN_PASS=nagios
+ENV APACHE_RUN_USER=www-data APACHE_RUN_GROUP=www-dataA
+
 ENV NAGIOS_TIMEZONE UTC
 ENV NAGIOS_VER nagios-4.1.1
 ENV NAGIOS_PLUG_VER nagios-plugins-2.1.1
@@ -56,9 +50,11 @@ RUN sed -i 's,/bin/mail,/usr/bin/mail,' ${NAGIOS_HOME}/etc/objects/commands.cfg 
     sed -i 's,/usr/usr,/usr,' ${NAGIOS_HOME}/etc/objects/commands.cfg && \ 
     cp /etc/services /var/spool/postfix/etc/
 
+
 # Setup NRPE
 ADD $DOWNNRPE /tmp/nrpe.tar.gz
 RUN cd /tmp && tar -zxvf nrpe.tar.gz && cd nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --prefix=${NAGIOS_HOME} && make && make install
+
 
 ENV NRDP_TOKEN "token1","token2"
 # Setup NRDPE
@@ -70,6 +66,7 @@ RUN cd /tmp && unzip nrdp.zip && mkdir /usr/local/nrdp/ && cd /usr/local/nrdp/ &
     sed -i 's/ Allow from all/Require all granted/g' /etc/apache2/conf-enabled/nrdp.conf && \
     sed -i 's/\/\/\"mysecrettoken\b.*$/${NRDP_TOKEN}/' /usr/local/nrdp/server/config.inc.php 
 
+
 # Setup Nagiosgraph
 ADD $DOWNGRAPH	/tmp/nagiosgraph.tar.gz
 #ADD nagiosgraph-1.5.2.tar.gz /tmp/
@@ -79,7 +76,6 @@ RUN cd /tmp && tar -zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
     sed -i '/ Order allow,deny/d' /etc/apache2/conf-enabled/nagiosgraph-apache.conf && \
     sed -i 's/ Allow from all/Require all granted/g' /etc/apache2/conf-enabled/nagiosgraph-apache.conf && \
     sed -i 's/\/tmp\/perfdata.log/\/usr\/local\/nagios\/var\/service-perfdata.out/g' ${NAGIOSGRAPH_HOME}/etc/nagiosgraph.conf
-
 
 
 # Cleanup
