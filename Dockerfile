@@ -87,7 +87,7 @@ RUN cd /tmp && tar -zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
 #    rm -rf /tmp/* /var/tmp/* && \
 #    rm -rf /var/lib/apt/lists/*
 
-ADD start.sh /usr/local/bin/start_nagios
+ADD start_nagios.sh /usr/local/bin/start_nagios
 RUN chmod +x /usr/local/bin/start_nagios
 
 
