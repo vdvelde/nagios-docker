@@ -8,11 +8,13 @@ ENV NAGIOS_TIMEZONE=Europe/Brussels
 
 ENV NAGIOS_VER nagios-4.1.1
 ENV DOWNURLNAGIOS https://sourceforge.net/projects/nagios/files/nagios-4.x/nagios-4.1.1/${NAGIOS_VER}.tar.gz/download
-ENV DOWNURLNAGIOS https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.1.2-Pre1.tar.gz
 
+#ENV DOWNURLNAGIOS https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.1.2-Pre1.tar.gz
 #ENV NAGIOS_VER nagioscore-nagios-4.1.2-Pre1
+
 ENV NAGIOS_PLUG_VER nagios-plugins-2.1.1
 ENV DOWNURLPLUG http://nagios-plugins.org/download/${NAGIOS_PLUG_VER}.tar.gz
+
 ENV DOWNNRPE https://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz/download
 ENV DOWNNRDP https://assets.nagios.com/downloads/nrdp/nrdp.zip
 ENV DOWNGRAPH http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz
@@ -21,7 +23,7 @@ ENV RADAR_PATH=/usr/local/radar
 # Setup environment
 RUN sed -i 's/universe/universe multiverse/' /etc/apt/sources.list
 RUN apt-get update && apt-get install -y iputils-ping netcat snmp snmpd snmp-mibs-downloader php5-cli apache2 apache2-utils libapache2-mod-php5 runit bc postfix bsd-mailx openssl 
-RUN apt-get install -y libgd-tools php5-gd php5-rrd librrds-perl libgd-perl libnagios-object-perl
+RUN apt-get install -y libgd-tools php5-gd php5-rrd librrds-perl libgd-perl libnagios-object-perl libfile-pid-perl
 RUN apt-get install -y build-essential unzip libssl-dev
 
 
@@ -88,7 +90,6 @@ ADD radar.pl $RADAR_PATH/bin/
 
 ADD start_nagios.sh /usr/local/bin/start_nagios
 RUN chmod +x /usr/local/bin/start_nagios
-
 
 EXPOSE 80
 
