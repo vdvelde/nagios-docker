@@ -80,7 +80,7 @@ RUN cd /tmp && tar -zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
     sed -i 's/\/tmp\/perfdata.log/\/usr\/local\/nagios\/var\/service-perfdata.out/g' ${NAGIOSGRAPH_HOME}/etc/nagiosgraph.conf
 
 # Setup radar
-RUN mkdir -p $RADAR_PATH/bin/ && $RADAR_PATH/log/
+RUN mkdir -p $RADAR_PATH/bin/ && mkdir -p $RADAR_PATH/log/
 ADD radar.pl $RADAR_PATH/bin/
 
 # Cleanup
