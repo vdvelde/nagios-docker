@@ -6,9 +6,18 @@ if [ ! -f ${NAGIOS_HOME}/etc/htpasswd.users ] ; then
   chown -R nagios.nagios ${NAGIOS_HOME}/etc/htpasswd.users
 fi
 
+#Set Security to the directory
+for DIR in /usr/local/nagios/etc/ /usr/local/nagiosgraph/var/rrd/
+do
+	if [ -d $DIR ]; then
+		chmod 755 $DIR
+	fi
+done
+
+# Startup services and application
 /etc/init.d/nagios start
 /etc/init.d/apache2 start
-/usr/local/bin/radar/radar.pl
+/usr/local/radar/bin/radar.pl
 
 # Everything is run in the background
 # We could create a fancy init here but the hack below is better.
