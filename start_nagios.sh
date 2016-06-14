@@ -8,6 +8,7 @@ fi
 
 /etc/init.d/nagios start
 /etc/init.d/apache2 start
+/usr/local/bin/radar/radar.pl
 
 # Everything is run in the background
 # We could create a fancy init here but the hack below is better.

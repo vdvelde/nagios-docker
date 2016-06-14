@@ -1,25 +1,22 @@
 FROM ubuntu:14.04
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV NAGIOS_HOME /usr/local/nagios
-ENV NAGIOSGRAPH_HOME /usr/local/nagiosgraph
-ENV NAGIOS_USER nagios
-ENV NAGIOS_GROUP nagios
-ENV NAGIOS_CMDUSER nagios
-ENV NAGIOS_CMDGROUP nagios
-ENV NAGIOSADMIN_USER nagiosadmin
-ENV NAGIOSADMIN_PASS nagios
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV NAGIOS_TIMEZONE UTC
+ENV NAGIOS_HOME=/usr/local/nagios NAGIOS_USER=nagios NAGIOS_GROUP=nagios NAGIOS_CMDUSER=nagios NAGIOS_CMDGROUP=nagios
+ENV NAGIOSGRAPH_HOME=/usr/local/nagiosgraph NAGIOSADMIN_USER=nagiosadmin NAGIOSADMIN_PASS=nagios
+ENV APACHE_RUN_USER=www-data APACHE_RUN_GROUP=www-data
+ENV NAGIOS_TIMEZONE=Europe/Brussels
+
 ENV NAGIOS_VER nagios-4.1.1
-ENV NAGIOS_PLUG_VER nagios-plugins-2.1.1
 ENV DOWNURLNAGIOS https://sourceforge.net/projects/nagios/files/nagios-4.x/nagios-4.1.1/${NAGIOS_VER}.tar.gz/download
+ENV DOWNURLNAGIOS https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.1.2-Pre1.tar.gz
+
+#ENV NAGIOS_VER nagioscore-nagios-4.1.2-Pre1
+ENV NAGIOS_PLUG_VER nagios-plugins-2.1.1
 ENV DOWNURLPLUG http://nagios-plugins.org/download/${NAGIOS_PLUG_VER}.tar.gz
 ENV DOWNNRPE https://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz/download
 ENV DOWNNRDP https://assets.nagios.com/downloads/nrdp/nrdp.zip
 ENV DOWNGRAPH http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz
-
+ENV RADAR_PATH=/usr/local/radar
 
 # Setup environment
 RUN sed -i 's/universe/universe multiverse/' /etc/apt/sources.list
@@ -80,7 +77,9 @@ RUN cd /tmp && tar -zxvf nagiosgraph.tar.gz && cd /tmp/nagiosgraph-1.5.2 && \
     sed -i 's/ Allow from all/Require all granted/g' /etc/apache2/conf-enabled/nagiosgraph-apache.conf && \
     sed -i 's/\/tmp\/perfdata.log/\/usr\/local\/nagios\/var\/service-perfdata.out/g' ${NAGIOSGRAPH_HOME}/etc/nagiosgraph.conf
 
-
+# Setup radar
+RUN mkdir -p $RADAR_PATH/bin/ && $RADAR_PATH/log/
+ADD radar.pl $RADAR_PATH/bin/
 
 # Cleanup
 #RUN apt-get clean && \
