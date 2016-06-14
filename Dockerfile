@@ -84,9 +84,9 @@ RUN mkdir -p $RADAR_PATH/bin/ && mkdir -p $RADAR_PATH/log/
 ADD radar.pl $RADAR_PATH/bin/
 
 # Cleanup
-#RUN apt-get clean && \
-#    rm -rf /tmp/* /var/tmp/* && \
-#    rm -rf /var/lib/apt/lists/*
+RUN apt-get remove -y build-essential unzip libssl-dev && apt-get clean && \
+    rm -rf /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/*
 
 ADD start_nagios.sh /usr/local/bin/start_nagios
 RUN chmod +x /usr/local/bin/start_nagios
