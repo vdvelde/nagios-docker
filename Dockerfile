@@ -13,7 +13,7 @@ ENV DOWNURLPLUG http://nagios-plugins.org/download/${NAGIOS_PLUG_VER}.tar.gz
 ENV DOWNNRPE https://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz/download
 ENV DOWNNRDP https://assets.nagios.com/downloads/nrdp/nrdp.zip
 ENV DOWNGRAPH http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz
-
+ENV DOWNREST https://github.com/mclarkson/nagrestconf/archive/master.zip
 
 # Setup environment
 RUN sed -i 's/universe/universe multiverse/' /etc/apt/sources.list
@@ -33,11 +33,6 @@ RUN cd /tmp && tar -zxvf nagios.tar.gz && cd ${NAGIOS_VER}  && ./configure --pre
 RUN cd /tmp/${NAGIOS_VER} && cp sample-config/httpd.conf /etc/apache2/conf-available/nagios.conf && cd /etc/apache2/conf-enabled && ln -s /etc/apache2/conf-available/nagios.conf
 
 
-# Setup nagios Plugins
-ADD $DOWNURLPLUG /tmp/nagios-plugins-2.1.1.tar.gz
-RUN cd /tmp && tar -zxvf nagios-plugins-2.1.1.tar.gz && cd nagios-plugins-2.1.1 && ./configure --prefix=${NAGIOS_HOME} && make && make install
-
-
 # Setup apache
 RUN sed -i.bak 's/.*\=www\-data//g' /etc/apache2/envvars && echo "export APACHE_RUN_USER=www-data" >> /etc/apache2/envvars && \
     echo "export APACHE_RUN_GROUP=www-data" >> /etc/apache2/envvars && sed -i 's/^ULIMIT_MAX_FILES/#ULIMIT_MAX_FILES/g' /usr/sbin/apache2ctl && \
@@ -49,11 +44,6 @@ RUN echo "use_timezone=$NAGIOS_TIMEZONE" >> ${NAGIOS_HOME}/etc/nagios.cfg && ech
 RUN sed -i 's,/bin/mail,/usr/bin/mail,' ${NAGIOS_HOME}/etc/objects/commands.cfg && \
     sed -i 's,/usr/usr,/usr,' ${NAGIOS_HOME}/etc/objects/commands.cfg && \ 
     cp /etc/services /var/spool/postfix/etc/
-
-
-# Setup NRPE
-ADD $DOWNNRPE /tmp/nrpe.tar.gz
-RUN cd /tmp && tar -zxvf nrpe.tar.gz && cd nrpe-2.15 && ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --prefix=${NAGIOS_HOME} && make && make install
 
 
 ENV NRDP_TOKEN "token1","token2"
